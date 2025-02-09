@@ -3,7 +3,6 @@ import requests
 from datetime import datetime, timedelta
 import pandas as pd
 import plotly.express as px
-import plotly.graph_objects as go
 
 st.set_page_config(page_title="Saudi Market News Sentiment", layout="wide")
 
@@ -24,7 +23,7 @@ def fetch_news():
     params = {
         "countries": "sa",
         "filter_entities": True,
-        "limit": 100,  # Increased for better analysis
+        "limit": 100,
         "published_after": published_after,
         "api_token": api_token
     }
@@ -38,8 +37,6 @@ def fetch_news():
 
 def create_sentiment_summary(entities_data):
     df = pd.DataFrame(entities_data)
-    
-    # Calculate average sentiment by symbol
     sentiment_summary = df.groupby('symbol').agg({
         'sentiment_score': ['mean', 'count'],
         'name': 'first'
@@ -107,7 +104,6 @@ def main():
                                 entities_df['sentiment_status'] = entities_df['sentiment_score'].apply(get_sentiment_color)
                                 st.dataframe(
                                     entities_df[['symbol', 'name', 'sentiment_score', 'sentiment_status']]
-                                    .style.background_gradient(subset=['sentiment_score'], cmap='RdYlGn')
                                 )
                             
                             st.markdown(f"[Read Full Article]({article['url']})")
